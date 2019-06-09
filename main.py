@@ -51,8 +51,8 @@ def aspect_scale(image, bx, by):
     return pygame.transform.scale(image, (int(sx), int(sy)))
 
 
-def generateURL():
-    global memeNumber, json_object, activeMemeNum, i
+def generateJSON():
+    global json_object, activeMemeNum, i
     if activeMemeNum == len(memeHistory)-1:
         i += 1
         # Checks to see the amount of memes generated with the current json, if over 20, generates new json
@@ -66,33 +66,38 @@ def generateURL():
             json_object = r.json()
             if not activeMemeNum == -1:
                 i == 1
-        upperRange = len(json_object["data"]["children"])-1
-        # defines upper range so code doesn't pull a post that doesn't exist
-        # finds the post number
-        memeNumber = random.randint(1, upperRange)
-        # collects URL of desired meme
-        memeURL = json_object["data"]["children"][memeNumber]["data"]["url"]
-        for URL in memeHistory:
-            if URL == memeURL:
-                generateURL()
-        activeMemeNum += 1
-        memeHistory.append(memeURL)
-        text = json_object["data"]["children"][memeNumber]["data"]["title"]
-        memeCaptionHistory.append(text)
-        print(memeCaptionHistory)
-        # Grabs the author
-        author = json_object["data"]["children"][memeNumber]["data"]["author"]
-        memeAuthorHistory.append(author)
-        print(memeAuthorHistory)
-        print(memeHistory)
-        # Displays caption
-        displayText(text, constants.titleFontSize, 50, "title")
-        # Displays author
-        displayText("By " + author, int(constants.titleFontSize / 1.5), 85, "author")
-        # Updates activeMemeNumber
-        displayNum(20)
-        initMeme(memeURL)
-        pygame.display.flip()
+    upperRange = len(json_object["data"]["children"])-1
+    # defines upper range so code doesn't pull a post that doesn't exist
+    # finds the post number
+    memeNumber = random.randint(1, upperRange)
+    # if new json is created, returns it
+    # If there is no new json, it will return global json
+    return json_object, memeNumber
+
+
+def createNewMeme():
+    global memeNumber, json_object, activeMemeNum
+    json, memeNumber = generateJSON()
+    for title in memeCaptionHistory:
+        if title == json["data"]["children"][memeNumber]["data"]["title"]:
+            json, memeNumber = generateJSON()
+    activeMemeNum += 1
+    # collects URL of desired meme
+    memeURL = json["data"]["children"][memeNumber]["data"]["url"]
+    title = json["data"]["children"][memeNumber]["data"]["title"]
+    author = json["data"]["children"][memeNumber]["data"]["author"]
+    memeHistory.append(memeURL)
+    memeCaptionHistory.append(title)
+    # Grabs the author
+    memeAuthorHistory.append(author)
+    # Displays caption
+    displayText(title, constants.titleFontSize, 50, "title")
+    # Displays author
+    displayText("By " + author, int(constants.titleFontSize / 1.5), 85, "author")
+    # Updates activeMemeNumber
+    displayNum(20)
+    initMeme(memeURL)
+    pygame.display.flip()
 
 
 def initMeme(memeURL):
@@ -113,9 +118,6 @@ def goForward():
     if activeMemeNum+1 <= len(memeHistory)-1:
         activeMemeNum += 1
         newMeme = memeHistory[activeMemeNum]
-        print(memeCaptionHistory)
-        print(len(memeCaptionHistory))
-        print(len(memeHistory))
         displayText(memeCaptionHistory[activeMemeNum], constants.titleFontSize, 50, "title")
         displayText("By " + memeAuthorHistory[activeMemeNum], int(constants.titleFontSize/1.5), 85, "author")
         displayNum(20)
@@ -161,7 +163,7 @@ def gameMain():
     screen = pygame.display.set_mode(constants.screenSize)
     screen.fill(constants.backgroundColor)
     gameQuit = False
-    generateURL()
+    createNewMeme()
     while not gameQuit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -171,7 +173,7 @@ def gameMain():
                     if activeMemeNum+1 <= len(memeHistory)-1:
                         goForward()
                     else:
-                        generateURL()
+                        createNewMeme()
                 if event.key == pygame.K_LEFT:
                     goBack()
     pygame.quit()
@@ -180,4 +182,3 @@ def gameMain():
 
 if __name__ == '__main__':
     gameMain()
-    generateURL()
