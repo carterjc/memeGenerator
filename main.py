@@ -8,6 +8,7 @@ import requests
 import random
 import pygame
 import io
+import time
 from urllib.request import urlopen
 
 
@@ -164,6 +165,7 @@ def gameMain():
     screen.fill(constants.backgroundColor)
     gameQuit = False
     createNewMeme()
+    autoPlay = False
     while not gameQuit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -176,6 +178,18 @@ def gameMain():
                         createNewMeme()
                 if event.key == pygame.K_LEFT:
                     goBack()
+                if event.key == pygame.K_SPACE:
+                    if autoPlay == True:
+                        autoPlay = False
+                    else:
+                        autoPlay = True
+                if autoPlay:
+                    if activeMemeNum+1 <= len(memeHistory)-1:
+                        goForward()
+                        time.sleep(3)
+                    else:
+                        createNewMeme()
+                        time.sleep(3)
     pygame.quit()
     exit()
 
