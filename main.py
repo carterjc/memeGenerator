@@ -183,13 +183,13 @@ def gameMain():
                         autoPlay = False
                     else:
                         autoPlay = True
-                if autoPlay:
-                    if activeMemeNum+1 <= len(memeHistory)-1:
-                        goForward()
-                        time.sleep(3)
-                    else:
-                        createNewMeme()
-                        time.sleep(3)
+             if autoPlay:
+                if activeMemeNum+1 <= len(memeHistory)-1:
+                    goForward()
+                    time.sleep(3)
+                else:
+                    createNewMeme()
+                    time.sleep(3)
     pygame.quit()
     exit()
 
