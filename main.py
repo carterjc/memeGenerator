@@ -178,18 +178,18 @@ def gameMain():
                         createNewMeme()
                 if event.key == pygame.K_LEFT:
                     goBack()
-                if event.key == pygame.K_SPACE:
-                    if autoPlay == True:
-                        autoPlay = False
-                    else:
-                        autoPlay = True
-             if autoPlay:
-                if activeMemeNum+1 <= len(memeHistory)-1:
-                    goForward()
-                    time.sleep(3)
-                else:
-                    createNewMeme()
-                    time.sleep(3)
+            #     if event.key == pygame.K_SPACE:
+            #         if autoPlay:
+            #             autoPlay = False
+            #         else:
+            #             autoPlay = True
+            # if autoPlay:
+            #     if activeMemeNum+1 <= len(memeHistory)-1:
+            #         goForward()
+            #         time.sleep(3)
+            #     else:
+            #         createNewMeme()
+            #         time.sleep(3)
     pygame.quit()
     exit()
 
